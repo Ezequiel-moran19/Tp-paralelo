@@ -1,0 +1,134 @@
+/* -------------------- CARRITO -------------------- */
+.contenedor_carrito {
+    width: 95%;      
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1.5em;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    margin-inline: auto;
+    animation: fadeIn 0.3s ease;
+}
+
+.contenedor_carrito h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#contador_carrito {
+    text-align: center;
+    padding: 8px 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.tabla-carrito {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.tabla-carrito th, 
+.tabla-carrito td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.tabla-carrito th {
+    background-color: #1e3c72;
+    color: white;
+}
+
+.img-tabla {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.fila-total td {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.boton-eliminar {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-eliminar:hover {
+    background-color: #e60000;
+    transform: scale(1.05);
+}
+
+/* 🔔 Toast */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    z-index: 1000;
+}
+
+.toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 0.3s ease;
+}
+
+.btn-salir {
+    background: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-salir:hover {
+    background: #e60000;
+    transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+    .tabla-carrito th, 
+    .tabla-carrito td {
+        font-size: 0.9em;
+        padding: 6px;
+    }
+
+    .img-tabla {
+        width: 45px;
+        height: 45px;
+    }
+}

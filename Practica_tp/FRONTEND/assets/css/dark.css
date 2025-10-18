@@ -1,0 +1,50 @@
+#modo{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.dark{
+    background: rgb(4, 24, 27);
+    color: white;
+}
+
+/* Carrito en modo oscuro */
+.dark .contenedor_carrito {
+    background-color: #f1f1f1; /* fondo oscuro */
+    color: #fff;               /* texto blanco */
+    box-shadow: 0 3px 12px rgba(255,255,255,0.1);
+}
+
+.dark .tabla-carrito th {
+    background-color: #4478a6;
+    color: #fff;
+    border-color: #3a4b5c;
+}
+
+.dark .tabla-carrito td {
+    color: #000000;
+    border-color: #3a4b5c;
+}
+
+.dark .fila-total td {
+    background-color: #4478a6;
+    color: #ffffff;
+}
+
+.dark .boton-eliminar {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.dark .boton-eliminar:hover {
+    background-color: #c0392b;
+}
+
+.cont_carrito{
+    color: #000000;
+}
