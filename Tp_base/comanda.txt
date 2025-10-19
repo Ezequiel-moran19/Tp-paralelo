@@ -1,0 +1,26 @@
+Pagina principal :
+
+-Hacer segun modelo de IA //VIC
+-Buscar logo //vic
+-modificar JSON para imagenes y demas // VIC  
+
+-Pantalla Productos: eze
+-Pantalla Carrito: Vic
+-Pantalla Ticket: eze
+Estetica:
+
+
+-Meter el nav en el header  , dejarlo fixed // eze
+-agregar iconos de sumar para stock 
+-ojo sin footer 
+
+-Media query // vic 
+
+Funcionalidad :
+ verificar modificar y hacer logica stock 
+
+
+
+Pantalla Final 
+-sacar boton redundante de cerrar sesion
+-sacar 
