@@ -1,70 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/productos.css">
+  <link rel="stylesheet" href="../css/modo.css">
 </head>
 <body>
+<main class="container mt-2">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <svg xmlns="http://www.w3.org/2000/svg" class="text-danger" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <span class="ms-2">RockStore</span>
+        </a>
 
-    <main>
+        <!-- Menu items -->
+        <div class="contendor-nav d-flex align-items-center ms-auto gap-3">
+            <a class="nav-link d-flex align-items-center p-3" href="/"><i class="bi bi-house me-1"></i>Inicio</a>
+            <a class="nav-link d-flex align-items-center p-3" href="./productos"><i class="bi bi-music-note me-1"></i>Productos</a>
+            <a class="nav-link d-flex align-items-center p-3" href="/carrito"><i class="bi bi-cart me-1"></i>Carrito</a>
+            <a class="nav-link d-flex align-items-center p-3" href="/admin/login"><i class="bi bi-person me-1"></i>Admin</a>
 
-        <header>
-            <div class="container">
-                <a href="/" class="logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    <span>RockStore</span>
-                </a>
+            <!-- Botón modo oscuro -->
+            <button id="modo-oscuro" class="btn d-flex align-items-center p-3">
+                <i class="bi bi-moon-fill" id="icono-modo"></i>
+            </button>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-                <nav class="nav-menu">
-                    <a href="/" class="nav-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                            <path d="M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        </svg>
-                        Inicio
-                    </a>
+  <section id="principal">
+    <h2 id="saludo" class="m-0 border-top bg-light d-flex justify-content-center align-items-center p-5">
+      Nuestros Productos
+    </h2>
 
-                    <a href="./productos" class="nav-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 18V5l12-2v13"></path>
-                            <circle cx="6" cy="18" r="3"></circle>
-                            <circle cx="18" cy="16" r="3"></circle>
-                        </svg>
-                        Productos
-                    </a>
+    <div id="filtros" class="d-flex justify-content-center align-items-center gap-3 p-2">
+      <button type="button" class="btn btn-light border">Cítricos</button>
+      <button type="button" class="btn btn-light border">Otras fruta</button>
+    </div>
 
-                    <a href="/carrito" class="nav-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="8" cy="21" r="1"></circle>
-                            <circle cx="19" cy="21" r="1"></circle>
-                            <path d="M2 2h2l2.7 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.6-7.4H5.1"></path>
-                        </svg>
-                        Carrito
-                    </a>
+    <div id="productos">
+      <div class="card" style="width: 18rem;">
+        <img src="../assets/img/guitarra-1.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title...</p>
+          <p class="card-text">$Precio</p>
+          <p class="card-text">Stock</p>
+          <div class="d-flex justify-content-center">
+            <a href="#" class="btn btn-danger boton-card align-items-center">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-light d-flex align-items-center justify-content-center gap-3 p-3">
+      <button class="btn btn-light border" id="siguiente">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+        </svg>
+      </button>
+      <p class="m-0 text-center">Pagina</p>
+      <button class="btn btn-light border" id="anterior">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+</main>
 
-                    <a href="/admin/login" class="nav-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        Admin
-                    </a>
-
-                    <button id="modo-oscuro" class="btn-modo">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-                        </svg>
-                    </button>
-                </nav>
-            </div>
-        </header>
-
-    </main>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/theme.js"></script>
 </body>
 </html>
