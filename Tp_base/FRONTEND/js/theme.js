@@ -1,20 +1,25 @@
-const btnModo = document.getElementById("modo-oscuro");
-  const icono = document.getElementById("icono-modo");
+export function inicializarModoOscuro() {
+  const btnDark = document.getElementById("modo-oscuro");
+  if (!btnDark) return;
+
+  const icon = document.getElementById("icono-modo");
   const body = document.body;
 
-  // Estado inicial desde localStorage
-  if(localStorage.getItem("modo") === "oscuro") {
+  const modoActual = localStorage.getItem("modo") || "claro";
+  if (modoActual === "oscuro") {
     body.classList.add("modo-oscuro");
-    icono.className = "bi bi-sun-fill";
+    actualizarIcono(icon, true);
+  } else {
+    actualizarIcono(icon, false);
   }
 
-  btnModo.addEventListener("click", () => {
-    body.classList.toggle("modo-oscuro");
-    if(body.classList.contains("modo-oscuro")) {
-      icono.className = "bi bi-sun-fill";
-      localStorage.setItem("modo", "oscuro");
-    } else {
-      icono.className = "bi bi-moon-fill";
-      localStorage.setItem("modo", "claro");
-    }
+  btnDark.addEventListener("click", () => {
+    const esOscuro = body.classList.toggle("modo-oscuro");
+    localStorage.setItem("modo", esOscuro ? "oscuro" : "claro");
+    actualizarIcono(icon, esOscuro);
   });
+}
+
+function actualizarIcono(icon, esOscuro) {
+  icon.className = esOscuro ? "bi bi-sun-fill" : "bi bi-moon-fill";
+}

@@ -3,22 +3,23 @@
   color: #fff !important;
 }
 
-.contendor-nav .nav-link,
-#modo-oscuro,
-.modo-oscuro .contendor-nav .nav-link,
-.modo-oscuro #modo-oscuro,
-.modo-oscuro #filtros .btn-light,
-.modo-oscuro #siguiente,
-.modo-oscuro #anterior {
-  transition: all 0.3s ease;
-  border-radius: 5px;
-}
-
 .contendor-nav .nav-link {
   color: #000;
 }
 .modo-oscuro .contendor-nav .nav-link {
   color: #fff;
+}
+
+.modo-oscuro .btn.bg-light {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+  border-color: #333 !important;
+}
+.modo-oscuro .btn.bg-light:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #dc3545 !important;
+  transform: scale(1.05);
 }
 
 .contendor-nav .nav-link:hover,
@@ -31,10 +32,6 @@
   background-color: #dc3545 !important;
   color: #fff !important;
   transform: scale(1.05);
-}
-
-#modo-oscuro {
-  color: #000;
 }
 
 .modo-oscuro .card {
@@ -58,15 +55,11 @@
 .modo-oscuro a {
   color: #fff !important;
 }
+
 .modo-oscuro #filtros .btn-light,
 .modo-oscuro #siguiente,
 .modo-oscuro #anterior {
   background-color: #1e1e1e !important;
   color: #fff !important;
   border-color: #333 !important;
-}
-.modo-oscuro #filtros .btn-light:hover,
-.modo-oscuro #siguiente:hover,
-.modo-oscuro #anterior:hover {
-  border-color: #dc3545 !important;
 }
