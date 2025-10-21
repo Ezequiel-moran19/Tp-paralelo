@@ -335,3 +335,5 @@ mostrarAlerta(msg) //→ muestra alertas rápidas.
 //   + mostrarModal(texto:string, callback:Function)
 //   + mostrarAlerta(msg:string)
 // }
+
+// npm i html2pdf
