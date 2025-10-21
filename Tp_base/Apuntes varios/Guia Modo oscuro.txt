@@ -1,0 +1,204 @@
+🌙 Modo Oscuro — Guía completa y explicada
+🧩 Funcionalidad general
+
+El modo oscuro permite al usuario alternar entre dos temas visuales del sitio:
+
+Modo claro: fondo blanco y texto oscuro (por defecto).
+
+Modo oscuro: fondo negro y texto claro, para una experiencia más cómoda en entornos con poca luz.
+
+👉 La elección del usuario se guarda en el localStorage, de modo que el modo elegido se mantiene incluso al recargar la página o cambiar de sección.
+
+🧠 Lógica y desarrollo paso a paso
+1️⃣ Inicialización de la función
+export function inicializarModoOscuro() { 
+  const btnDark = document.getElementById("modo-oscuro");
+  if (!btnDark) return;
+
+
+Se exporta la función para poder importarla en otros módulos, como main.js.
+
+Se busca el botón del modo oscuro con id="modo-oscuro".
+
+Si no existe (por ejemplo, en una página sin barra de navegación), se corta la ejecución con return para evitar errores.
+
+🔹 Motivo: Previene que el script arroje errores en páginas donde el botón no está presente.
+
+2️⃣ Obtención de elementos del DOM
+const icon = document.getElementById("icono-modo");
+const body = document.body;
+
+
+icon → referencia al ícono dentro del botón (luna o sol).
+
+body → elemento raíz del documento donde se aplicará o quitará la clase modo-oscuro.
+
+💡 Por qué se aplica al <body>:
+Agregar la clase al body permite afectar a toda la página mediante selectores CSS como .modo-oscuro .card, sin tener que modificar múltiples elementos individualmente.
+
+3️⃣ Leer el modo actual desde localStorage
+const modoActual = localStorage.getItem("modo") || "claro";
+
+
+Se lee la clave "modo" almacenada en el navegador.
+
+Si no existe (primera visita), el modo por defecto será "claro".
+
+🔹 Motivo: el localStorage permite recordar las preferencias del usuario entre sesiones.
+
+4️⃣ Aplicar el modo guardado
+if (modoActual === "oscuro") {
+  body.classList.add("modo-oscuro");
+  actualizarIcono(icon, true);
+} else {
+  actualizarIcono(icon, false);
+}
+
+
+Si el modo guardado es "oscuro", se agrega la clase modo-oscuro al <body>.
+
+Se actualiza el ícono del botón (de luna a sol).
+
+Si es "claro", se mantiene sin la clase y el ícono queda como luna.
+
+💡 Resultado: al recargar la página, el usuario conserva el tema visual que eligió previamente.
+
+5️⃣ Escuchar el clic del botón
+btnDark.addEventListener("click", () => {
+  const esOscuro = body.classList.toggle("modo-oscuro");
+  localStorage.setItem("modo", esOscuro ? "oscuro" : "claro");
+  actualizarIcono(icon, esOscuro);
+});
+
+🔍 Desglose:
+
+toggle() agrega la clase si no está, o la quita si ya está.
+
+esOscuro devuelve true si la clase se agregó, false si se quitó.
+
+localStorage.setItem() guarda el nuevo estado ("oscuro" o "claro").
+
+Se llama a actualizarIcono para cambiar el ícono según el modo.
+
+🔹 Motivo: esta lógica permite alternar entre los dos temas con un solo clic, y que el sistema recuerde el modo elegido.
+
+6️⃣ Función auxiliar para el ícono
+function actualizarIcono(icon, esOscuro) {
+  icon.className = esOscuro ? "bi bi-sun-fill" : "bi bi-moon-fill";
+}
+
+
+Cambia el ícono según el modo activo:
+
+🌙 Modo claro: muestra una luna (bi bi-moon-fill).
+
+☀️ Modo oscuro: muestra un sol (bi bi-sun-fill).
+
+💡 Motivo: la retroalimentación visual indica al usuario en qué modo está y qué acción puede realizar (por ejemplo, “volver al claro”).
+
+🎨 Estilos CSS del modo oscuro
+
+La clase .modo-oscuro se aplica al <body> y, mediante selectores descendientes, afecta a distintos componentes visuales.
+
+1️⃣ Colores generales
+.modo-oscuro {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+
+Fondo negro y texto blanco para toda la página.
+
+!important asegura que prevalezca sobre otros estilos heredados.
+
+2️⃣ Navegación
+.contendor-nav .nav-link {
+  color: #000;
+}
+.modo-oscuro .contendor-nav .nav-link {
+  color: #fff;
+}
+
+
+En modo claro, los enlaces de navegación son oscuros.
+
+En modo oscuro, se invierte el color para mantener contraste y legibilidad.
+
+3️⃣ Botones claros adaptados
+.modo-oscuro .btn.bg-light {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+  border-color: #333 !important;
+}
+.modo-oscuro .btn.bg-light:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #dc3545 !important;
+  transform: scale(1.05);
+}
+
+
+Se ajusta el color de los botones que normalmente son claros (.bg-light), dándoles un tono gris oscuro.
+
+En hover, se resalta en rojo (#dc3545) con leve animación scale(1.05).
+
+4️⃣ Hover global y consistencia
+.contendor-nav .nav-link:hover,
+.modo-oscuro .contendor-nav .nav-link:hover,
+#modo-oscuro:hover,
+.modo-oscuro #modo-oscuro:hover,
+.modo-oscuro #filtros .btn-light:hover,
+.modo-oscuro #siguiente:hover,
+.modo-oscuro #anterior:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+
+
+Se unifican todos los efectos hover del sitio (enlaces, botones, navegación) para mantener coherencia visual.
+
+transform: scale(1.05) agrega una sensación de interacción fluida.
+
+5️⃣ Tarjetas, secciones y componentes
+.modo-oscuro .card {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+  border: 1px solid #333;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.modo-oscuro .card-title,
+.modo-oscuro .card-text {
+  color: #fff !important;
+}
+
+
+Las tarjetas adoptan fondo gris oscuro y texto blanco.
+
+Se añade una sombra suave para resaltar sobre el fondo negro.
+
+6️⃣ Pie de página y contenedores
+.modo-oscuro .bg-light {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-top: 1px solid #333;
+}
+
+
+Adapta elementos de fondo claro (.bg-light) al modo oscuro, manteniendo contraste y delimitación mediante bordes.
+
+7️⃣ Íconos, enlaces y botones secundarios
+.modo-oscuro i,
+.modo-oscuro a {
+  color: #fff !important;
+}
+
+.modo-oscuro #filtros .btn-light,
+.modo-oscuro #siguiente,
+.modo-oscuro #anterior {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+  border-color: #333 !important;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
