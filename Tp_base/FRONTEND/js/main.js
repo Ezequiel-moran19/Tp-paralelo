@@ -1,11 +1,9 @@
 import { inicializarModoOscuro } from "./theme.js"
 import { convertirHtmlPdf } from "./controllers/TicketController.js";
+import { ProductosController } from "./controllers/ProductosController.js";
+
 function initPersona() {
     if (document.getElementById("persona")) {}
-}
-
-function initProductos() {
-    if (document.getElementById("productos")) {}
 }
 
 function initPCarrito() {
@@ -21,11 +19,12 @@ function initTicket() {
 }
 
 function init() {
-    initProductos();
+    // initProductos();
     initTicket() 
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     inicializarModoOscuro();
+    ProductosController.initProductos()
     init();
 });
