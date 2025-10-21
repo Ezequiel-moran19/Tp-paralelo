@@ -1,5 +1,5 @@
 export const productos = [ 
-  { id: 1, nombre: "guitarra1", precio: 120, rutaImg: "assets/img/guitarra1.jpg", categoria: "Guitarra", activo: true },
+  { id: 1, nombre: "guitarra1", precio: 120, rutaImg: "/assets/img/guitarra1.jpg", categoria: "Guitarra", activo: true },
   { id: 2, nombre: "guitarra2", precio: 90, rutaImg: "assets/img/guitarra2.jpg", categoria: "Guitarra", activo: true },
   { id: 3, nombre: "guitarra3", precio: 110, rutaImg: "assets/img/guitarra3.jpg", categoria: "Guitarra", activo: true },
   { id: 4, nombre: "guitarra4", precio: 130, rutaImg: "assets/img/guitarra4.jpg", categoria: "Guitarra", activo: true },
