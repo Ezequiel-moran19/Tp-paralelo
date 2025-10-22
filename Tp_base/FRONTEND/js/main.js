@@ -17,7 +17,6 @@ function initTicket() {
     btnConfirmar.addEventListener("click", () => convertirHtmlPdf("idPdf"));
   }
 }
-
 function init() {
     // initProductos();
     initTicket() 
@@ -26,5 +25,6 @@ function init() {
 document.addEventListener("DOMContentLoaded", () => {
     inicializarModoOscuro();
     ProductosController.initProductos()
+    localStorage.clear()
     init();
 });
