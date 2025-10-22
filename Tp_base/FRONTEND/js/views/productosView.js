@@ -29,3 +29,47 @@ export class ProductosView {
     } 
 }
 
+// function crearImagen(src, alt) {
+//   const img = document.createElement("img");
+//   img.src = src;
+//   img.alt = alt;
+//   img.classList.add("card-img-top");
+//   return img;
+// }
+
+// function crearTexto(tag, clase, contenido) {
+//   const el = document.createElement(tag);
+//   el.classList.add(clase);
+//   el.textContent = contenido;
+//   return el;
+// }
+
+// function crearBoton(texto) {
+//   const btn = document.createElement("a");
+//   btn.href = "#";
+//   btn.className = "btn btn-danger boton-card align-items-center";
+//   btn.textContent = texto;
+//   return btn;
+// }
+
+// export function renderizaProducto(producto) {
+//   const card = document.createElement("div");
+//   card.classList.add("card");
+//   card.style.width = "18rem";
+
+//   const img = crearImagen(producto.rutaImg, producto.nombre);
+//   const body = document.createElement("div");
+//   body.classList.add("card-body");
+
+//   body.append(
+//     crearTexto("h5", "card-title", producto.nombre),
+//     crearTexto("p", "card-text", producto.descripcion),
+//     crearTexto("p", "card-text", `$${producto.precio}`),
+//     crearTexto("p", "card-text", `Stock: ${producto.stock}`),
+//     crearTexto("p", "card-text", `Categoría: ${producto.categoria}`),
+//     crearBoton("Agregar al carrito")
+//   );
+
+//   card.append(img, body);
+//   return card;
+// }
