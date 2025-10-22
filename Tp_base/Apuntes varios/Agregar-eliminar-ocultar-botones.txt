@@ -1,0 +1,141 @@
+1️⃣ Evento principal en el Controller (ProductosController)
+contenedor.addEventListener("click", (e) => {
+    e.preventDefault();
+
+
+Captura todos los clics dentro del contenedor de productos.
+
+Se usa delegación de eventos en lugar de agregar un listener a cada botón, porque:
+
+Es más eficiente (solo un listener para todo el contenedor).
+
+Evita problemas cuando se renderizan productos nuevos.
+
+Si se agregara addEventListener en cada card, sería más costoso y difícil de mantener.
+
+if (e.target && e.target.classList.contains("btnAgregar")) {
+
+
+Verifica que el clic fue en el botón “Agregar al carrito”.
+
+Así evitamos ejecutar la lógica en otros elementos dentro del contenedor.
+
+🧩 2️⃣ Ocultar el botón y preparar el contador
+const card = e.target.closest(".card");
+const nombre = card.querySelector(".card-title").textContent.replace("Nombre: ", "");
+e.target.style.display = "none";
+
+
+closest(".card"): busca el contenedor .card más cercano al botón, para manipular solo esa tarjeta.
+
+replace("Nombre: ", ""): limpia el texto del título, dejando solo el nombre del producto.
+
+style.display = "none": oculta el botón “Agregar”, porque el producto ya fue agregado.
+
+No se elimina el botón, solo se oculta, para poder mostrarlo de nuevo si el producto se quita.
+
+🧩 3️⃣ Crear los nuevos botones (+, –) y contador
+const btnSumar = ProductosView.crearBotonSumar();
+const contador = ProductosView.renderContador();
+const btnRestar = ProductosView.crearBotonRestar();
+
+
+Se crean los tres elementos con funciones pequeñas y específicas.
+
+Esto mejora la modularidad: si querés cambiar el diseño o estilo de los botones, lo hacés en una sola función.
+
+Además, mantiene el Controller limpio (solo maneja lógica, no HTML).
+
+🧩 4️⃣ Crear el contenedor de botones
+const contenedorBtn = document.createElement("div");
+contenedorBtn.classList.add("d-flex", "justify-content-center", "align-items-center", "mt-2");
+contenedorBtn.append(btnRestar, contador, btnSumar);
+
+
+Se genera un <div> para agrupar los botones y el contador.
+
+Se usan clases Bootstrap para mantener el formato.
+
+Se insertan los tres elementos en orden visual: – [contador] +.
+
+Se usa append en lugar de innerHTML para evitar sobrescribir contenido o listeners previos.
+
+🧩 5️⃣ Insertar el grupo en la card
+card.querySelector(".card-body").appendChild(contenedorBtn);
+
+
+Se agrega el bloque al final del cuerpo de la tarjeta.
+
+Se podría usar insertAdjacentElement, pero appendChild es más simple y claro en este caso.
+
+🧩 6️⃣ Buscar el producto en la lista y pasar a la vista
+const producto = productos.find(p => p.nombre === nombre);
+ProductosView.agregarEventosCard(card, producto);
+
+
+Busca el objeto del producto real en el array productos, para conocer su stock, precio, etc.
+
+Luego llama a agregarEventosCard (definida en la vista) para conectar los botones con su lógica.
+
+🧩 7️⃣ Dentro de ProductosView.agregarEventosCard
+➕ Botón sumar
+btnSumar.addEventListener("click", (e) => {
+    e.preventDefault();
+    let valor = parseInt(contador.textContent);
+    if (valor < producto.stock) {
+        contador.textContent = valor + 1;
+    }
+});
+
+
+Aumenta el contador, pero solo si no supera el stock disponible.
+
+Se podría guardar también en localStorage aquí, pero se recomienda hacerlo en el Controller (para mantener la separación entre vista y lógica).
+
+➖ Botón restar
+btnRestar.addEventListener("click", (e) => {
+    e.preventDefault();
+    let valor = parseInt(contador.textContent);
+    if (valor > 1) {
+        contador.textContent = valor - 1;
+    } else {
+        const contenedorBtn = card.querySelector("div.mt-2");
+        if (contenedorBtn) contenedorBtn.remove();
+        card.querySelector(".btnAgregar").style.display = "block";
+    }
+});
+
+
+Si el valor es mayor a 1 → simplemente resta.
+
+Si llega a 1 y vuelve a restar → se interpreta como eliminación del producto del carrito.
+
+El bloque de botones se borra del DOM.
+
+Se vuelve a mostrar el botón “Agregar al carrito”.
+
+Se elige quitar el bloque del DOM y no solo ocultarlo para liberar espacio visual y evitar listeners activos innecesarios.
+
+⚙️ Por qué esta estructura y no otra
+
+✅ Separación clara de responsabilidades
+
+Controller: maneja la lógica de eventos y flujo.
+
+View: maneja el DOM y la presentación.
+
+✅ Uso de delegación de eventos
+
+Solo un listener principal en lugar de uno por botón (mejor rendimiento y mantenimiento).
+
+✅ Reutilización de funciones pequeñas
+
+Facilita pruebas y futuras modificaciones.
+
+✅ Evita duplicar listeners
+
+Cada card solo tiene un conjunto de botones y listeners mientras exista.
+
+✅ Base lista para integrar con localStorage
+
+Los cambios en cantidad o eliminación pueden luego reflejarse en el almacenamiento sin alterar esta lógica base.
