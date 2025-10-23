@@ -76,4 +76,16 @@ export class ProductosView {
             }
         });
     }
+
+    static crearContenedorBotones() {
+        const btnSumar = ProductosView.crearBotonSumar();
+        const contador = ProductosView.renderContador();
+        const btnRestar = ProductosView.crearBotonRestar();
+
+        const contenedorBotones = document.createElement("div");
+        contenedorBotones.classList.add("d-flex", "justify-content-center", "align-items-center", "mt-2");
+        contenedorBotones.append(btnRestar, contador, btnSumar);
+
+        return contenedorBotones;
+    }
 }

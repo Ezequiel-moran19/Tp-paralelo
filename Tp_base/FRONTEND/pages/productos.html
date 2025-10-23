@@ -47,25 +47,35 @@
     </h2>
 
     <div id="filtros" class="d-flex justify-content-center align-items-center gap-3 p-2">
-      <button type="button" class="btn btn-light border">Guitarras</button>
-      <button type="button" class="btn btn-light border">Pianos</button>
+      <button type="button" id="filtro-guitarra" class="btn btn-light border">Guitarras</button>
+      <button type="button" id="filtro-pianos" class="btn btn-light border">Pianos</button>
     </div>
 
     <div id="productos"> </div>
     
-    <div class="bg-light d-flex align-items-center justify-content-center gap-3 p-3">
-      <button class="btn btn-light border" id="siguiente">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-        </svg>
-      </button>
-      <p class="m-0 text-center">Pagina</p>
-      <button class="btn btn-light border" id="anterior">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-        </svg>
-      </button>
-    </div>
+      <div class="bg-light d-flex align-items-center justify-content-center gap-3 p-3">
+        <button class="btn btn-light border" id="anterior">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
+              class="bi bi-chevron-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" 
+                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+          </svg>
+        </button>
+
+        <p class="m-0 text-center">
+          Página <span id="pagina-actual">1</span> de <span id="total-paginas">1</span>
+        </p>
+
+
+        <button class="btn btn-light border" id="siguiente">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
+              class="bi bi-chevron-right" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" 
+                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </button>
+      </div>
+
   </section>
 </main>
 
