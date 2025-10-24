@@ -1,5 +1,4 @@
 export class ProductosView {
-
     static renderizaProducto(producto) {
         const card = document.createElement("div");
         card.classList.add("card");
@@ -60,20 +59,60 @@ export class ProductosView {
             e.preventDefault();
             let valor = parseInt(contador.textContent);
             if (valor < producto.stock) {
-                contador.textContent = valor + 1;
+                valor += 1;
+                contador.textContent = valor;
+
+                let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+                let item = carrito.find(p => p.nombre === producto.nombre);
+
+                if (item) {
+                    if (item.cantidad < producto.stock) {
+                        item.cantidad = valor;
+                        item.subtotal = item.cantidad * item.precio;
+                    } else {
+                        alert(`No hay más stock disponible (${producto.stock})`);
+                    }
+                } else {
+                    // Si no existe, agregar al carrito con stock
+                    carrito.push({
+                        nombre: producto.nombre,
+                        precio: producto.precio,
+                        cantidad: 1,
+                        subtotal: producto.precio,
+                        stock: producto.stock,
+                        rutaImg: producto.rutaImg
+                    });
+                }
+
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+            } else {
+                alert(`No hay más stock disponible (${producto.stock})`);
             }
         });
 
         btnRestar.addEventListener("click", (e) => {
             e.preventDefault();
             let valor = parseInt(contador.textContent);
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+            let item = carrito.find(p => p.nombre === producto.nombre);
+
             if (valor > 1) {
-                contador.textContent = valor - 1;
+                valor -= 1;
+                contador.textContent = valor;
+                if (item) {
+                    item.cantidad = valor;
+                    item.subtotal = item.cantidad * item.precio;
+                }
             } else {
-                const contenedorBtn = card.querySelector("div.mt-2");
-                if (contenedorBtn) contenedorBtn.remove();
+                // eliminar del carrito
+                contador.textContent = 1;
+                if (item) {
+                    carrito = carrito.filter(p => p.nombre !== producto.nombre);
+                }
                 card.querySelector(".btnAgregar").style.display = "block";
             }
+
+            localStorage.setItem("carrito", JSON.stringify(carrito));
         });
     }
 
