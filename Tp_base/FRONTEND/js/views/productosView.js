@@ -1,7 +1,13 @@
 export class ProductosView {
+    static crearElemento(tag, className, innerHTML = '') {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (innerHTML) element.innerHTML = innerHTML;
+        return element;
+    }
+
     static renderizaProducto(producto) {
-        const card = document.createElement("div");
-        card.classList.add("card");
+        const card = this.crearElemento('div', 'card');
         card.style.width = "18rem";
         card.innerHTML = `
             <img src="${producto.rutaImg}" class="card-img-top" alt="${producto.nombre}">
@@ -19,110 +25,120 @@ export class ProductosView {
         return card;
     }
 
-    static mostrarProducto(contenedor, listaProductos) {
+    static mostrarProducto(contenedor, listaProductos, carrito) {
         contenedor.innerHTML = "";
-        listaProductos.forEach(producto => {
-            const card = ProductosView.renderizaProducto(producto);
+        listaProductos.forEach((producto) => {
+            const card = this.renderizaProducto(producto);
+            const itemEnCarrito = carrito.items.find(p => p.id === producto.id);
+
+            if (itemEnCarrito) {
+                this.configurarCardConCarrito(card, producto, carrito);
+            }
             contenedor.appendChild(card);
         });
     }
 
-    static crearBotonSumar() {
-        const btn = document.createElement("a");
+    static configurarCardConCarrito(card, producto, carrito) {
+        const btnAgregar = card.querySelector(".btnAgregar");
+        if (btnAgregar) btnAgregar.style.display = "none";
+
+        const contenedorExistente = card.querySelector("div.mt-2");
+        if (contenedorExistente) contenedorExistente.remove();
+
+        const contenedorBotones = this.crearContenedorBotones();
+        const itemEnCarrito = carrito.items.find(p => p.id === producto.id);
+        contenedorBotones.querySelector("span").textContent = itemEnCarrito.cantidad;
+        card.querySelector(".card-body").appendChild(contenedorBotones);
+
+        this.agregarEventosCard(card, producto, carrito);
+    }
+
+    static crearBoton(tipo) {
+        const clases = {
+            sumar: "btn btn-light btn-sm btn-mas mas",
+            restar: "btn btn-light btn-sm btn-menos menos"
+        };
+        const btn = this.crearElemento('a', clases[tipo]);
         btn.href = "#";
-        btn.className = "btn btn-outline-success btn-sm btn-mas";
-        btn.textContent = "+";
+        btn.textContent = tipo === 'sumar' ? "+" : "-";
         return btn;
     }
 
-    static crearBotonRestar() {
-        const btn = document.createElement("a");
-        btn.href = "#";
-        btn.className = "btn btn-outline-danger btn-sm btn-menos";
-        btn.textContent = "-";
-        return btn;
+    static manejarCantidad(card, producto, carrito, operacion) {
+        const contador = card.querySelector("span");
+        const itemIndex = carrito.items.findIndex(p => p.id === producto.id);
+        const item = carrito.items[itemIndex];
+        
+        if (!item) return;
+
+        if (operacion === 'incrementar') {
+            if (item.cantidad < producto.stock) {
+                item.cantidad += 1;
+            } else {
+                alert(`⚠️ No hay más stock disponible (${producto.stock})`);
+                return;
+            }
+        } else {
+            item.cantidad -= 1;
+        }
+
+        if (item.cantidad <= 0) {
+            carrito.items.splice(itemIndex, 1);
+            this.restaurarCard(card);
+        } else {
+            item.subtotal = item.cantidad * item.precio;
+            contador.textContent = item.cantidad;
+        }
+
+        carrito.guardar();
+    }
+
+    static manejarBotonMas(card, producto, carrito) {
+        this.manejarCantidad(card, producto, carrito, 'incrementar');
+    }
+
+    static manejarBotonMenos(card, producto, carrito) {
+        this.manejarCantidad(card, producto, carrito, 'decrementar');
+    }
+
+    static restaurarCard(card) {
+        const btnAgregar = card.querySelector(".btnAgregar");
+        if (btnAgregar) btnAgregar.style.display = "block";
+
+        const contenedorBotones = card.querySelector("div.mt-2");
+        if (contenedorBotones) contenedorBotones.remove();
     }
 
     static renderContador() {
-        const contador = document.createElement("span");
+        const contador = this.crearElemento('span', 'fw-bold mx-2');
         contador.textContent = "1";
-        contador.className = "fw-bold mx-2";
         return contador;
     }
 
-    static agregarEventosCard(card, producto) {
-        const btnSumar = card.querySelector(".btn-mas");
-        const btnRestar = card.querySelector(".btn-menos");
-        const contador = card.querySelector("span");
+    static agregarEventosCard(card, producto, carrito) {
+        const contenedorBotones = card.querySelector("div.mt-2");
+        if (!contenedorBotones) return;
 
-        btnSumar.addEventListener("click", (e) => {
+        const nuevoContenedor = contenedorBotones.cloneNode(true);
+        contenedorBotones.parentNode.replaceChild(nuevoContenedor, contenedorBotones);
+
+        nuevoContenedor.addEventListener("click", (e) => {
             e.preventDefault();
-            let valor = parseInt(contador.textContent);
-            if (valor < producto.stock) {
-                valor += 1;
-                contador.textContent = valor;
-
-                let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-                let item = carrito.find(p => p.nombre === producto.nombre);
-
-                if (item) {
-                    if (item.cantidad < producto.stock) {
-                        item.cantidad = valor;
-                        item.subtotal = item.cantidad * item.precio;
-                    } else {
-                        alert(`No hay más stock disponible (${producto.stock})`);
-                    }
-                } else {
-                    // Si no existe, agregar al carrito con stock
-                    carrito.push({
-                        nombre: producto.nombre,
-                        precio: producto.precio,
-                        cantidad: 1,
-                        subtotal: producto.precio,
-                        stock: producto.stock,
-                        rutaImg: producto.rutaImg
-                    });
-                }
-
-                localStorage.setItem("carrito", JSON.stringify(carrito));
-            } else {
-                alert(`No hay más stock disponible (${producto.stock})`);
+            
+            if (e.target.classList.contains("btn-mas")) {
+                this.manejarBotonMas(card, producto, carrito);
+            } else if (e.target.classList.contains("btn-menos")) {
+                this.manejarBotonMenos(card, producto, carrito);
             }
-        });
-
-        btnRestar.addEventListener("click", (e) => {
-            e.preventDefault();
-            let valor = parseInt(contador.textContent);
-            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-            let item = carrito.find(p => p.nombre === producto.nombre);
-
-            if (valor > 1) {
-                valor -= 1;
-                contador.textContent = valor;
-                if (item) {
-                    item.cantidad = valor;
-                    item.subtotal = item.cantidad * item.precio;
-                }
-            } else {
-                // eliminar del carrito
-                contador.textContent = 1;
-                if (item) {
-                    carrito = carrito.filter(p => p.nombre !== producto.nombre);
-                }
-                card.querySelector(".btnAgregar").style.display = "block";
-            }
-
-            localStorage.setItem("carrito", JSON.stringify(carrito));
         });
     }
-
     static crearContenedorBotones() {
-        const btnSumar = ProductosView.crearBotonSumar();
-        const contador = ProductosView.renderContador();
-        const btnRestar = ProductosView.crearBotonRestar();
+        const btnSumar = this.crearBoton('sumar')
+        const contador = this.renderContador();
+        const btnRestar = this.crearBoton('restar');
 
-        const contenedorBotones = document.createElement("div");
-        contenedorBotones.classList.add("d-flex", "justify-content-center", "align-items-center", "mt-2");
+        const contenedorBotones = this.crearElemento('div', 
+            'd-flex justify-content-between align-items-center mt-2');
         contenedorBotones.append(btnRestar, contador, btnSumar);
 
         return contenedorBotones;

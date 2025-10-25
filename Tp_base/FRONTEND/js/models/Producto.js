@@ -27,7 +27,3 @@ export class Producto{
         }
     }
 }
-
-
-
-

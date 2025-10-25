@@ -3,7 +3,14 @@ export class CarritoView {
         this.carrito = carrito;
         this.items = carrito.items;
         this.confirmarCallback = confirmarCallback;
-        this.columnasOcultas = ["id", "estado"];
+        this.resumenContainer = null;
+    }
+
+    static crearElemento(tag, className, innerHTML = '') {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (innerHTML) element.innerHTML = innerHTML;
+        return element;
     }
 
     mostrarCarrito() {
@@ -11,179 +18,179 @@ export class CarritoView {
         if (!contenedor) return;
 
         contenedor.innerHTML = "";
+        
+        this.limpiarResumen();
 
-        this.crearTabla(contenedor);
+        if (!this.items.length) {
+            contenedor.innerHTML = `<div class="alert alert-info text-center">Tu carrito está vacío </div>`;
+        } else {
+            contenedor.innerHTML = this.items.map((item, i) => this.generarCardItem(item, i)).join('');
+            this.mostrarResumen();
+            this.asignarEventos();
+        }
+        
         this.actualizarContador();
-        this.asignarEventoConfirmar(contenedor);
     }
 
-    crearTabla(contenedor) {
-        const tabla = document.createElement("table");
-        tabla.className = "tabla-carrito";
+    limpiarResumen() {
+        const resumenDiv = document.getElementById("resumen");
+        if (resumenDiv) resumenDiv.innerHTML = "";
+        this.resumenContainer = null;
+    }
+    generarCardItem(item, index) {
+        return `
+            <div class="d-flex gap-4 border rounded p-3 mb-3 align-items-center shadow-sm" data-item-id="${item.id}">
+                <img src="${item.rutaImg}" alt="${item.nombre}" 
+                    class="rounded object-fit-cover" style="width: 100px; height: 100px;">
 
-        const thead = document.createElement("thead");
-        thead.appendChild(this.crearEncabezadoTabla());
-        tabla.appendChild(thead);
+                <div class="flex-grow-1">
+                    <h5 class="fw-semibold mb-1">${item.nombre}</h5>
+                    <p class="text-muted mb-2 descripcion">${item.descripcion || "Sin descripción"}</p>
+                    <p class="fw-bold text-danger mb-0">$${item.precio}</p>
+                    <p class="text-sm text-danger mb-0">Stock: ${item.stock}</p>
+                </div>
 
-        const tbody = document.createElement("tbody");
-        tabla.appendChild(tbody);
-        this.crearCuerpoTabla(tbody);
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <button class="btn btn-outline-danger btn-sm btn-eliminar" data-index="${index}">
+                        <i class="bi bi-trash"></i>
+                    </button>
 
-        tbody.appendChild(this.crearFilaTotal());
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-outline-secondary btn-sm restar menos" data-index="${index}">-</button>
+                        <span class="fw-semibold cantidad" data-index="${index}">${item.cantidad}</span>
+                        <button class="btn btn-outline-secondary btn-sm sumar mas" data-index="${index}">+</button>
+                    </div>
 
-        contenedor.appendChild(tabla);
+                    <p class="fw-semibold text-sm mb-0 subtotal" data-index="${index}">Subtotal: $${item.subtotal}</p>
+                </div>
+            </div>`;
     }
 
-    crearEncabezadoTabla() {
-        const cabecera = document.createElement("tr");
+    mostrarResumen() {
+        const subtotal = this.carrito.calcularTotal();
+        
+        this.resumenContainer = CarritoView.crearElemento('div', 'p-3 bg-light rounded shadow-sm');
+        this.resumenContainer.innerHTML = this.generarResumenHTML(subtotal);
+        
+        const resumenDiv = document.getElementById("resumen");
+        if (resumenDiv) {
+            resumenDiv.innerHTML = ""; // limpia antes
+            resumenDiv.appendChild(this.resumenContainer);
+        }
 
-        if (!this.items.length) return cabecera;
-
-        const columnas = Object.keys(this.items[0])
-            .filter(col => !this.columnasOcultas.includes(col) && col !== "rutaImg");
-
-        const thImg = document.createElement("th");
-        thImg.textContent = "IMAGEN";
-        cabecera.appendChild(thImg);
-
-        columnas.forEach(col => {
-            const th = document.createElement("th");
-            th.textContent = col.toUpperCase();
-            cabecera.appendChild(th);
+        document.getElementById("finalizarCompra").addEventListener("click", () => {
+            if (this.confirmarCallback) this.confirmarCallback();
         });
+}
 
-        const thAcciones = document.createElement("th");
-        thAcciones.textContent = "ACCIONES";
-        cabecera.appendChild(thAcciones);
-
-        return cabecera;
+    generarResumenHTML(subtotal) {
+        return `
+            <div class="p-3 bg-light rounded">
+                <h4 class="fw-bold mb-3">Resumen</h4>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal</span>
+                    <span class="resumen-subtotal">$${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold fs-5 text-danger">
+                    <span>Total</span>
+                    <span class="resumen-total">$${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-danger w-100 mb-2" id="finalizarCompra">Finalizar Compra</button>
+                    <a href="./productos.html" class="btn btn-outline-secondary w-100">Seguir comprando</a>
+                </div>
+            </div>`;
     }
 
-    crearCuerpoTabla(cuerpo) {
-        this.items.forEach((item, i) => {
-            const fila = document.createElement("tr");
-            const tdImg = document.createElement("td");
-            tdImg.appendChild(this.crearImagenCard(item));
-            fila.appendChild(tdImg);
+    asignarEventos() {
+        this.configurarEventosBoton(".restar", (index) => this.cambiarCantidad(index, -1));
+        this.configurarEventosBoton(".sumar", (index) => this.cambiarCantidad(index, 1));
+        this.configurarEventosBoton(".btn-eliminar", (index) => this.eliminarItem(index));
+    }
 
-            Object.keys(item).forEach(key => {
-                if (this.columnasOcultas.includes(key) || key === "rutaImg") return;
+    configurarEventosBoton(selector, handler) {
+        const contenedor = document.getElementById("carrito");
+        if (!contenedor) return;
 
-                const td = document.createElement("td");
-                td.textContent = key === "precio" ? `$${item[key]}` : item[key];
-                fila.appendChild(td);
-            });
-
-            this.crearCeldasBoton(fila, i);
-
-            cuerpo.appendChild(fila);
+        contenedor.addEventListener("click", (e) => {
+            const target = e.target;
+            if (target.matches(selector) || target.closest(selector)) {
+                const elemento = target.matches(selector) ? target : target.closest(selector);
+                const index = elemento.dataset.index;
+                if (index !== undefined) {
+                    e.preventDefault();
+                    handler(index);
+                }
+            }
         });
     }
-
-    crearImagenCard(item) {
-        const img = document.createElement("img");
-        img.src = item.rutaImg;
-        img.alt = item.nombre;
-        img.className = "img-tabla";
-        return img;
-    }
-
-    crearCeldasBoton(fila, index) {
-        const tdAcciones = document.createElement("td");
-
-        const item = this.carrito.items[index];
-
-        const btnRestar = document.createElement("button");
-        btnRestar.textContent = "-";
-        btnRestar.className = "btn btn-danger btn-sm mx-1";
-        btnRestar.addEventListener("click", () => this.cambiarCantidad(index, -1));
-
-        const btnSumar = document.createElement("button");
-        btnSumar.textContent = "+";
-        btnSumar.className = "btn btn-success btn-sm mx-1";
-        btnSumar.addEventListener("click", () => this.cambiarCantidad(index, 1));
-        console.log(item);
-
-        const btnEliminar = this.crearBotonEliminar();
-        btnEliminar.dataset.index = index;
-
-        tdAcciones.append(btnRestar, btnSumar, btnEliminar);
-        fila.appendChild(tdAcciones);
-    }
-
-    crearBotonEliminar() {
-        const btn = document.createElement("button");
-        btn.className = "boton-eliminar btn btn-warning btn-sm";
-        btn.textContent = "Eliminar";
-        btn.addEventListener("click", (e) => {
-            const index = parseInt(e.target.dataset.index);
-            this.carrito.eliminar(index);
-            this.items = this.carrito.items;
-            this.mostrarCarrito();
-        });
-        return btn;
+    eliminarItem(index) {
+        this.carrito.eliminar(index);
+        this.items = this.carrito.items;
+        this.mostrarCarrito(); 
     }
 
     cambiarCantidad(index, delta) {
         const item = this.carrito.items[index];
         if (!item) return;
 
-        // ✅ Bloquear cuando se supera el stock
         if (delta > 0 && item.cantidad >= item.stock) {
             alert(`No hay más stock disponible (${item.stock})`);
             return;
         }
 
         item.cantidad += delta;
-
+        
         if (item.cantidad <= 0) {
             this.carrito.eliminar(index);
+            this.items = this.carrito.items;
+            this.mostrarCarrito();
         } else {
             item.subtotal = item.cantidad * item.precio;
             this.carrito.guardar();
+            this.actualizarVistaParcial(index); 
+        }
+    }
+
+    actualizarVistaParcial(index) {
+        const item = this.carrito.items[index];
+        if (!item) return;
+
+        const cantidadElement = document.querySelector(`.cantidad[data-index="${index}"]`);
+        if (cantidadElement) {
+            cantidadElement.textContent = item.cantidad;
         }
 
-        this.items = this.carrito.items;
-        this.mostrarCarrito();
+        const subtotalElement = document.querySelector(`.subtotal[data-index="${index}"]`);
+        if (subtotalElement) {
+            subtotalElement.textContent = `Subtotal: $${item.subtotal}`;
+        }
+
+        this.actualizarResumen();
+        this.actualizarContador();
     }
 
-    crearFilaTotal() {
-        const totalFila = document.createElement("tr");
-        totalFila.className = "fila-total";
-
-        const totalCols = this.items.length ? Object.keys(this.items[0]).length - this.columnasOcultas.length + 1 : 3;
-        totalFila.innerHTML = `
-            <td colspan="${totalCols - 2}"><strong>Total</strong></td>
-            <td colspan="2"><strong>$${this.carrito.calcularTotal()}</strong></td>
-        `;
-        return totalFila;
-    }
-
-    asignarEventoConfirmar(contenedor) {
-        const btnConfirmar = document.createElement("button");
-        btnConfirmar.textContent = "Confirmar compra";
-        btnConfirmar.classList.add("btn-generico", "btn", "btn-primary", "mt-2");
-        btnConfirmar.addEventListener("click", () => {
-            if (this.confirmarCallback) this.confirmarCallback();
-        });
-        contenedor.appendChild(btnConfirmar);
+    actualizarResumen() {
+        if (!this.resumenContainer) return;
+        
+        const subtotal = this.carrito.calcularTotal();
+        const subtotalElement = this.resumenContainer.querySelector('.resumen-subtotal');
+        const totalElement = this.resumenContainer.querySelector('.resumen-total');
+        
+        if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        if (totalElement) totalElement.textContent = `$${subtotal.toFixed(2)}`;
     }
 
     actualizarContador() {
         const cont = document.getElementById("contador_carrito");
         if (!cont) return;
 
-        cont.innerHTML = "";
-        cont.classList.add("cont_carrito");
-
-        const p = document.createElement("p");
-        const total = this.carrito.calcularTotal();
         const cantidad = this.items.length;
+        const total = this.carrito.calcularTotal();
 
-        p.textContent = cantidad
+        cont.className = "alert alert-secondary mt-3 text-center";
+        cont.textContent = cantidad
             ? `🛒 ${cantidad} producto(s) - Total: $${total}`
-            : `🛒 Carrito vacío (0 productos)`;
-
-        cont.appendChild(p);
+            : "🛒 Carrito vacío (0 productos)";
     }
 }

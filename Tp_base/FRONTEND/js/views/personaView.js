@@ -15,6 +15,7 @@ export class PersonaView {
 
     escucharSubmit(callback) {
         if (!this.form) return;
+        
         this.form.addEventListener("submit", (e) => {
             e.preventDefault();
             callback(this.input.value);

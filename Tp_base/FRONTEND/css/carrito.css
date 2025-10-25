@@ -47,72 +47,13 @@
     background-color: #b9134f;
 }
 /*---------------------------*/
-.tabla-carrito {
-    width: 100%;
-    max-width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+
+#resumen {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
 }
 
-.tabla-carrito th, 
-.tabla-carrito td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
-
-.tabla-carrito th {
-    background-color: #1e3c72;
-    color: white;
-}
-
-.img-tabla {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-}
-
-.fila-total td {
-    background-color: #f0f0f0;
-    font-weight: bold;
-}
-
-.boton-eliminar {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.boton-eliminar:hover {
-    background-color: #e60000;
-    transform: scale(1.05);
-}
-
-/* 🔔 Toast */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    z-index: 1000;
-}
-
-.toast.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
 
 .fade-out {
     opacity: 0;
