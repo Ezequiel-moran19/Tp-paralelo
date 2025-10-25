@@ -6,10 +6,10 @@ export class Ticket {
         this.total = total;
         this.fechaHora = fechaHora;
     }
-    static generar(carrito, persona) {
+    static generar(carrito) {
         return new Ticket(
             Date.now(),
-            persona.idPersona,
+            carrito.nombreUsuario,
             [...carrito.items], 
             carrito.calcularTotal(),
             new Date().toLocaleString()

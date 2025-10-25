@@ -1,7 +1,5 @@
 
 export class ticketView{
-
-
         static motrarticket(ticket){
             console.log(ticket)
             const contenedor = document.getElementById("principalTicket");
@@ -70,6 +68,7 @@ export class ticketView{
         btnDescargar.innerHTML = `<i class="bi bi-download me-2"></i> Descargar PDF`;
 
         const btnSalir = document.createElement("a");
+        btnSalir.id = "btnSalir";
         btnSalir.href = "./productos.html";
         btnSalir.classList.add("btn", "bg-light", "border", "flex-fill", "d-flex", "align-items-center", "justify-content-center");
         btnSalir.innerHTML = `<i class="bi bi-house me-2"></i> Salir`;
@@ -109,7 +108,7 @@ export class ticketView{
 
     const small = document.createElement("small");
     small.classList.add("text-muted");
-    small.textContent = `$${producto.precio.toLocaleString()} x uhhh`;
+    small.textContent = `$${producto.precio.toLocaleString()} x ${producto.cantidad} U`;
 
     info.appendChild(pNombre);
     info.appendChild(small);

@@ -12,7 +12,6 @@ export class CarritoController {
 
     const carrito = Carrito.crearDesdeLocalStorage(nombreUsuario);
     const vista = new CarritoView(carrito, () => {
-      alert("Compra confirmada ✅");
       vista.mostrarCarrito();
     });
 
