@@ -1,129 +1,137 @@
-import { ProductosView } from "../views/productosView.js"; 
+import { ProductosView } from "../views/productosView.js";
 import { productos } from "../api.js";
+import { Persona } from "../models/Personas.js";
+import { Carrito } from "../models/Carrito.js";
 
 export class ProductosController {
     static paginaActual = 1;
     static productosPorPagina = 6;
     static contenedor = null;
     static categoriaFiltrada = null;
+    static carrito = null;
 
     static initProductos() {
-        ProductosController.contenedor = document.getElementById("productos");
-        ProductosController.mostrarPagina();
-        ProductosController.configurarFiltros();
-        ProductosController.configurarPaginacion();
-        ProductosController.configurarEventosAgregar();
+        const nombreUsuario = Persona.obtenerNombre();
+        if (!nombreUsuario) {
+            window.location.href = "bienvenida.html";
+            return;
+        }
+
+        this.carrito = Carrito.crearDesdeLocalStorage(nombreUsuario);
+        this.contenedor = document.getElementById("productos");
+
+        this.mostrarPagina();
+        this.configurarFiltros();
+        this.configurarPaginacion();
+        this.configurarEventosAgregar();
     }
 
     static configurarFiltros() {
-        const btnGuitarra = document.getElementById("filtro-guitarra");
-        const btnPianos = document.getElementById("filtro-pianos");
+        const configurarFiltro = (id, categoria) => {
+            const boton = document.getElementById(id);
+            if (boton) boton.addEventListener("click", () => this.filtrarPorCategoria(categoria));
+        };
 
-        if (btnGuitarra) btnGuitarra.addEventListener("click", () => ProductosController.filtrarPorCategoria("Guitarra"));
-        if (btnPianos) btnPianos.addEventListener("click", () => ProductosController.filtrarPorCategoria("Piano"));
+        configurarFiltro("filtro-guitarra", "Guitarra");
+        configurarFiltro("filtro-pianos", "Piano");
     }
 
     static configurarPaginacion() {
-        const btnSiguiente = document.getElementById("siguiente");
-        const btnAnterior = document.getElementById("anterior");
+        const configurarBoton = (id, accion) => {
+            const boton = document.getElementById(id);
+            if (boton) boton.addEventListener("click", () => this[accion]());
+        };
 
-        if (btnSiguiente) btnSiguiente.addEventListener("click", () => ProductosController.paginaSiguiente());
-        if (btnAnterior) btnAnterior.addEventListener("click", () => ProductosController.paginaAnterior());
+        configurarBoton("siguiente", "paginaSiguiente");
+        configurarBoton("anterior", "paginaAnterior");
+    }
+
+    static manejarAgregarProducto(card, producto) {
+        const btnAgregar = card.querySelector(".btnAgregar");
+        btnAgregar.style.display = "none";
+
+        const agregado = this.carrito.agregar(producto);
+
+        if (agregado) {
+            const contenedorExistente = card.querySelector("div.mt-2");
+            if (contenedorExistente) contenedorExistente.remove();
+
+            const contenedorBotones = ProductosView.crearContenedorBotones();
+            card.querySelector(".card-body").appendChild(contenedorBotones);
+
+            ProductosView.agregarEventosCard(card, producto, this.carrito);
+        } else {
+            alert(`⚠️ No hay más stock disponible (${producto.stock})`);
+            btnAgregar.style.display = "block";
+        }
     }
 
     static configurarEventosAgregar() {
-        ProductosController.contenedor.addEventListener("click", function(e) {
-            if (e.target && e.target.classList.contains("btnAgregar")) {
-                const card = e.target.closest(".card");
-                const nombre = card.querySelector(".card-title").textContent.replace("Nombre: ", "");
-                e.target.style.display = "none";
+        this.contenedor.addEventListener("click", (e) => {
+            const card = e.target.closest(".card");
+            if (!card) return;
 
-                const contenedorExistente = card.querySelector("div.mt-2");
-                if (contenedorExistente) contenedorExistente.remove();
+            const nombre = card.querySelector(".card-title").textContent.replace("Nombre: ", "");
+            const producto = productos.find(p => p.nombre === nombre);
+            if (!producto) return;
 
-                const producto = productos.find(p => p.nombre === nombre);
+            e.preventDefault();
 
-                if (producto) {
-                    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-                    const productoExistente = carrito.find(p => p.nombre === producto.nombre);
-                    if (productoExistente) {
-                        if (productoExistente.cantidad >= producto.stock) {
-                            alert(`No hay más stock disponible (${producto.stock})`);
-                            return;
-                        }
-                        productoExistente.cantidad += 1;
-                        productoExistente.subtotal = productoExistente.cantidad * producto.precio;
-                    } else {
-                        carrito.push({
-                            nombre: producto.nombre,
-                            precio: producto.precio,
-                            cantidad: 1,
-                            subtotal: producto.precio,
-                            rutaImg: producto.rutaImg,
-                            stock: producto.stock 
-                        });
-                    }
-                    localStorage.setItem("carrito", JSON.stringify(carrito));
-                    console.log("✅ Producto agregado al carrito:", carrito);
-                    }
-
-                const contenedorBotones = ProductosView.crearContenedorBotones();
-                card.querySelector(".card-body").appendChild(contenedorBotones);
-                ProductosView.agregarEventosCard(card, producto);
+            if (e.target.classList.contains("btnAgregar")) {
+                this.manejarAgregarProducto(card, producto);
             }
         });
     }
 
-    static mostrarPagina() {
-        const inicio = (ProductosController.paginaActual - 1) * ProductosController.productosPorPagina;
-        const fin = inicio + ProductosController.productosPorPagina;
+    static obtenerListaActual() {
+        return this.categoriaFiltrada || productos;
+    }
 
-        const lista = ProductosController.obtenerListaActual().slice(inicio, fin);
-        ProductosView.mostrarProducto(ProductosController.contenedor, lista);
-        ProductosController.actualizarIndicadorPaginas();
+    static mostrarPagina() {
+        const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+        const fin = inicio + this.productosPorPagina;
+        const lista = this.obtenerListaActual().slice(inicio, fin);
+        
+        ProductosView.mostrarProducto(this.contenedor, lista, this.carrito);
+        this.actualizarIndicadorPaginas();
     }
 
     static mostrarTodos() {
-        ProductosController.categoriaFiltrada = null;
-        ProductosController.paginaActual = 1;
-        ProductosController.mostrarPagina();
+        this.categoriaFiltrada = null;
+        this.paginaActual = 1;
+        this.mostrarPagina();
     }
 
     static paginaAnterior() {
-        if (ProductosController.paginaActual > 1) {
-            ProductosController.paginaActual--;
-            ProductosController.mostrarPagina();
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.mostrarPagina();
         }
     }
-
     static paginaSiguiente() {
-        if (ProductosController.paginaActual < ProductosController.obtenerTotalPaginas()) {
-            ProductosController.paginaActual++;
-            ProductosController.mostrarPagina();
+        if (this.paginaActual < this.obtenerTotalPaginas()) {
+            this.paginaActual++;
+            this.mostrarPagina();
         }
     }
 
     static obtenerTotalPaginas() {
-        return Math.ceil(ProductosController.obtenerListaActual().length / ProductosController.productosPorPagina);
-    }
-
-    static obtenerListaActual() {
-        return ProductosController.categoriaFiltrada ? ProductosController.categoriaFiltrada : productos;
+        return Math.ceil(this.obtenerListaActual().length / this.productosPorPagina);
     }
 
     static filtrarPorCategoria(categoria) {
-        ProductosController.categoriaFiltrada = productos.filter(p => p.categoria === categoria);
-        ProductosController.paginaActual = 1;
-        ProductosController.mostrarPagina();
+        this.categoriaFiltrada = productos.filter(p => p.categoria === categoria);
+        this.paginaActual = 1;
+        this.mostrarPagina();
     }
 
     static actualizarIndicadorPaginas() {
-        const totalPaginas = ProductosController.obtenerTotalPaginas();
+        const totalPaginas = this.obtenerTotalPaginas();
         const actual = document.getElementById("pagina-actual");
         const total = document.getElementById("total-paginas");
+        
         if (actual && total) {
-            actual.textContent = ProductosController.paginaActual;
+            actual.textContent = this.paginaActual;
             total.textContent = totalPaginas;
         }
     }
