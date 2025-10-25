@@ -3,6 +3,7 @@ import { ProductosController } from "./controllers/ProductosController.js";
 import { CarritoController } from "./controllers/CarritoController.js";
 import { PersonaController } from "./controllers/PersonaController.js";
 import { Persona } from "./models/Personas.js";
+import { ticketController } from "./controllers/TicketController.js";
 
 class ConfiguradorNavegacion {
     static configurarBotonInicio() {
@@ -30,7 +31,9 @@ function inicializarModulos() {
     const modulos = [
         { selector: "#productos", inicializador: () => ProductosController.initProductos() },
         { selector: ".carrito", inicializador: () => CarritoController.initCarrito() },
-        { selector: "form && #fNombre", inicializador: () => PersonaController.init() }
+        { selector: "form && #fNombre", inicializador: () => PersonaController.init() },
+        { selector: "#principalTicket", inicializador: () => ticketController.initTicket() },
+        
     ];
 
     modulos.forEach(({ selector, inicializador }) => {

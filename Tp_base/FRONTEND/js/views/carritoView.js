@@ -80,6 +80,7 @@ export class CarritoView {
 
         document.getElementById("finalizarCompra").addEventListener("click", () => {
             if (this.confirmarCallback) this.confirmarCallback();
+            window.location.href = "./ticket.html"
         });
 }
 

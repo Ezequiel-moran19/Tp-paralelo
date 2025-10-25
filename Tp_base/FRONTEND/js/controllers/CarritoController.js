@@ -13,10 +13,14 @@ export class CarritoController {
     const carrito = Carrito.crearDesdeLocalStorage(nombreUsuario);
     const vista = new CarritoView(carrito, () => {
       alert("Compra confirmada ✅");
-      carrito.vaciar();
       vista.mostrarCarrito();
     });
 
     vista.mostrarCarrito();
+  }
+  static conseguirCarrito(){
+        const nombreUsuario = Persona.obtenerNombre();
+        const carrito = Carrito.crearDesdeLocalStorage(nombreUsuario);
+    return carrito
   }
 }
