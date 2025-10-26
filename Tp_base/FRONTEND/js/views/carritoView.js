@@ -74,7 +74,7 @@ export class CarritoView {
         
         const resumenDiv = document.getElementById("resumen");
         if (resumenDiv) {
-            resumenDiv.innerHTML = ""; // limpia antes
+            resumenDiv.innerHTML = ""; 
             resumenDiv.appendChild(this.resumenContainer);
         }
 

@@ -7,9 +7,8 @@ import { Persona } from "../models/Personas.js";
 
 
 export class ticketController{
-      static initTicket() {
+    static initTicket() {
         let carrito = CarritoController.conseguirCarrito();
-        console.log(carrito)
 
         const ticket = Ticket.generar(carrito);
         ticketView.motrarticket(ticket);
@@ -23,11 +22,8 @@ export class ticketController{
           carrito.vaciar();
           Persona.borrarNombre();
         })
+  }
 }
-
-}
-
-
 
 export function convertirHtmlPdf(divElement) {
   const original = document.getElementById(divElement);

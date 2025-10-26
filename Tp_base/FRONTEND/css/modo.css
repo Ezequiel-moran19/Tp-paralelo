@@ -64,7 +64,9 @@
 }
 .modo-oscuro .card-title,
 .modo-oscuro .card-text,
-.modo-oscuro .descripcion {
+.modo-oscuro .descripcion,
+.modo-oscuro .cantidad, 
+.modo-oscuro .precio {
   color: #fff !important;
 }
 
