@@ -5,15 +5,15 @@ export class Persona {
     }
 
     static guardarNombre(nombre) {
-        localStorage.setItem("nombreUsuario", nombre);
+        sessionStorage.setItem("nombreUsuario", nombre);
     }
 
     static obtenerNombre() {
-        return localStorage.getItem("nombreUsuario");
+        return sessionStorage.getItem("nombreUsuario");
     }
 
     static borrarNombre() {
-        localStorage.removeItem("nombreUsuario");
+        sessionStorage.removeItem("nombreUsuario");
     }
 
     static validar(nombre) {

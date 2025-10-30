@@ -11,7 +11,7 @@ class ConfiguradorNavegacion {
             link.addEventListener("click", (e) => {
                 e.preventDefault();
                 const nombreUsuario = Persona.obtenerNombre();
-                window.location.href = nombreUsuario ? "productos.html" : "bienvenida.html";
+                window.location.href = nombreUsuario ? "/pages/productos.html" : "bienvenida.html";
             });
         });
     }
@@ -51,6 +51,7 @@ function inicializarModulos() {
 function verificarSesion() {
     const currentPage = window.location.pathname;
     if (!currentPage.includes("bienvenida.html")) {
+
         console.log("Verificando sesión...");
         if (!PersonaController.verificarSesion()) {
             console.log("Sesión no válida, deteniendo inicialización");
@@ -63,7 +64,7 @@ function verificarSesion() {
 function init() {
     console.log("Iniciando aplicación...");
     console.log("Página actual:", window.location.pathname);
-    console.log("Usuario:", localStorage.getItem("nombreUsuario"));
+    console.log("Usuario:", sessionStorage.getItem("nombreUsuario"));
 
     if (!verificarSesion()) return;
     
@@ -76,3 +77,4 @@ document.addEventListener("DOMContentLoaded", () => {
     ConfiguradorNavegacion.configurarBotonInicio();
     ConfiguradorNavegacion.configurarBotonCerrarSesion();
 });
+

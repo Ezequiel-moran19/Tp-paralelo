@@ -69,3 +69,14 @@ input[type="submit"]:hover {
         padding: 30px 25px;
     }
 }
+
+#btnLogin{ 
+    justify-self: center;
+    align-self: flex-end;
+}
+
+#incio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -40,7 +40,7 @@ export class PersonaController {
         Persona.borrarNombre();
         
         if (nombreUsuario) {
-            localStorage.removeItem(`Carrito_${nombreUsuario}`);
+            sessionStorage.removeItem(`Carrito_${nombreUsuario}`);
         }
         
         localStorage.removeItem("carrito");
